@@ -1,0 +1,13 @@
+name = "solana-web-ide-rpc-proxy"
+main = "src/index.ts"
+compatibility_date = "2024-10-22"
+workers_dev = true
+
+# Optional: allow requests from your dev/prod origin only.
+# Left permissive for now; tighten before mainnet launch.
+[vars]
+ALLOWED_ORIGINS = "*"
+
+# Rate limit: simple in-memory token bucket per isolate.
+# Not bulletproof, but stops casual abuse of the shared key.
+RATE_LIMIT_PER_MINUTE = "60"
