@@ -1,0 +1,25 @@
+{
+    "name": "@solana-web-ide/build-service",
+    "version": "0.0.0",
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "dev": "tsx watch src/index.ts",
+        "start": "node --enable-source-maps dist/index.js",
+        "build": "tsc -p tsconfig.json",
+        "typecheck": "tsc --noEmit",
+        "test": "vitest run",
+        "test:watch": "vitest"
+    },
+    "dependencies": {
+        "@solana-web-ide/compiler-core": "workspace:*",
+        "@solana-web-ide/shared": "workspace:*",
+        "fastify": "^5.1.0"
+    },
+    "devDependencies": {
+        "@types/node": "^26.6.5",
+        "tsx": "^4.19.2",
+        "typescript": "^5.6.3",
+        "vitest": "^2.1.0"
+    }
+}
