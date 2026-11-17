@@ -40,10 +40,10 @@ pnpm dev  # wasm blob served from /wasm/
 
 | Component | Status |
 |---|---|
-| `packages/compiler-wasm/src/` | ✅ TypeScript API scaffolded |
-| `packages/compiler-wasm/rust/` | 🟡 wasm-bindgen stub |
-| `native/solana-compiler-frontend/` | 🔴 Rust frontend to implement |
-| `native/llvm-bpf/` | 🔴 LLVM BPF backend |
+| `packages/compiler-wasm/src/` | Complete (TypeScript API scaffolded) |
+| `packages/compiler-wasm/rust/` | In progress (wasm-bindgen stub) |
+| `native/solana-compiler-frontend/` | Planned (Rust frontend) |
+| `native/llvm-bpf/` | Planned (LLVM BPF backend) |
 
 ## Fallback
 

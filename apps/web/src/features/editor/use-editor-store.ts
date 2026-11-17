@@ -22,7 +22,11 @@ export const useEditorStore = create<EditorState>((set) => ({
   openPaths: [],
 
   setFileContent: (path, content) =>
-    set((s) => ({ files: { ...s.files, [path]: { ...s.files[path], content } } })),
+    set((s) => {
+      const existing = s.files[path];
+      if (!existing) return s;
+      return { files: { ...s.files, [path]: { ...existing, content } } };
+    }),
 
   openFile: (path) =>
     set((s) => ({

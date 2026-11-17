@@ -16,7 +16,7 @@ export function parseRustDiagnostics(stderr: string): WireDiagnostic[] {
 
     for (const line of lines) {
         const header = line.match(HEADER);
-        if (header) {
+        if (header && header[1] && header[3]) {
             if (current) out.push(current);
             current = {
                 severity: header[1] === 'info' ? 'info' : (header[1] as 'error' | 'warning'),
@@ -28,7 +28,7 @@ export function parseRustDiagnostics(stderr: string): WireDiagnostic[] {
         }
 
         const loc = line.match(LOCATION);
-        if (loc && current) {
+        if (loc && loc[1] && loc[2] && loc[3] && current) {
             current.file = loc[1].trim();
             current.line = Number.parseInt(loc[2], 10);
             current.column = Number.parseInt(loc[3], 10);

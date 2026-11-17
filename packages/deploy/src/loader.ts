@@ -1,6 +1,8 @@
-import type { Connection } from '@solana/web3.js';
+import type { Connection, Transaction, VersionedTransaction } from '@solana/web3.js';
 import type { DeployRequest, DeployProgress, DeployResult } from './types.js';
 import { decodeProgram, chunkProgram } from './chunker.js';
+
+export type SignerFn = <T extends Transaction | VersionedTransaction>(tx: T) => Promise<T>;
 
 /**
  * Deploy a Solana program using BPFLoaderUpgradeable.
@@ -16,10 +18,10 @@ import { decodeProgram, chunkProgram } from './chunker.js';
 export async function deployProgram(
   request: DeployRequest,
   connection: Connection,
-  _signTransaction: (tx: unknown) => Promise<unknown>,
+  _signTransaction: SignerFn,
   onProgress: (p: DeployProgress) => void,
 ): Promise<DeployResult> {
-  onProgress({ phase: 'creating-buffer', pct: 5, message: 'Creating program buffer account...' });
+  onProgress({ phase: 'creating-buffer', pct: 5, message: 'Creating program buffer account…' });
 
   const programBytes = decodeProgram(request.programSoBase64);
   const chunks = chunkProgram(programBytes);

@@ -43,7 +43,7 @@ export function ProgramKeypairCard() {
         onClick={handleGenerate}
         style={{ background: '#3c3c3c', border: '1px solid #555', color: '#ccc', borderRadius: 3, padding: '5px 12px', fontSize: 12, cursor: 'pointer', marginTop: 4 }}
       >
-        + Generate Keypair
+        Generate Keypair
       </button>
     </div>
   );

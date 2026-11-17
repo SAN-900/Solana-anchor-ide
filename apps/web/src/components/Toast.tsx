@@ -35,8 +35,8 @@ export function ToastContainer({ toasts }: { toasts: ToastMessage[] }) {
           maxWidth: 320,
           boxShadow: '0 2px 8px rgba(0,0,0,0.5)',
         }}>
-          <span style={{ color: TYPE_COLOR[t.type], marginRight: 8 }}>
-            {t.type === 'success' ? '✓' : t.type === 'error' ? '✗' : 'ℹ'}
+          <span style={{ color: TYPE_COLOR[t.type], marginRight: 8, fontSize: 10, fontWeight: 600 }}>
+            [{t.type.toUpperCase()}]
           </span>
           {t.message}
         </div>
