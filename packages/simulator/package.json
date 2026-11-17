@@ -1,0 +1,20 @@
+{
+  "name": "@solana-web-ide/simulator",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "lint": "eslint src"
+  },
+  "dependencies": {
+    "@solana-web-ide/shared": "workspace:*",
+    "@solana-web-ide/rpc": "workspace:*",
+    "@solana/web3.js": "^1.95.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.6.3"
+  }
+}

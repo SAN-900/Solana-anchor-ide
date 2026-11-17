@@ -1,0 +1,21 @@
+{
+  "name": "@solana-web-ide/compiler-remote",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test": "vitest run",
+    "lint": "eslint src"
+  },
+  "dependencies": {
+    "@solana-web-ide/compiler-core": "workspace:*",
+    "@solana-web-ide/shared": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "^5.6.3",
+    "vitest": "^2.0.0"
+  }
+}

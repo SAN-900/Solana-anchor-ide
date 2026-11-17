@@ -18,4 +18,9 @@ export default defineConfig({
   worker: {
     format: 'es',
   },
+  resolve: {
+    alias: {
+      buffer: 'buffer/',
+    },
+  },
 });
