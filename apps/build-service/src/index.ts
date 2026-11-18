@@ -1,5 +1,5 @@
 import Fastify from 'fastify';
-import { buildProject } from './builder.js';
+import { buildProject, buildProjectStreaming } from './builder.js';
 import { BuildCache, hashRequest } from './cache.js';
 import type { BuildRequest, BuildResponse } from './types.js';
 
@@ -52,6 +52,78 @@ app.post<{ Body: BuildRequest }>('/build', async (req, reply) => {
     }
     req.log.info({ key, ok: result.ok, durationMs: result.durationMs }, 'build complete');
     return reply.header('X-Cache', 'MISS').send(result);
+});
+
+/**
+ * SSE streaming endpoint: POST /build/stream
+ *
+ * Same request body as POST /build, but responds with:
+ *   Content-Type: text/event-stream
+ *
+ * Event types emitted during the build:
+ *   event: log     - a single line of raw cargo/anchor output
+ *   event: result  - the final BuildResponse JSON (last event before close)
+ *
+ * The client can render log lines immediately so there is visible feedback
+ * during the 1-3 minute cold build, rather than a frozen spinner.
+ *
+ * Cache hits respond immediately with a single "result" event.
+ */
+app.post<{ Body: BuildRequest }>('/build/stream', async (req, reply) => {
+    const body = req.body;
+    if (!body || typeof body !== 'object') {
+        return reply.code(400).send({ error: 'Body must be a BuildRequest' });
+    }
+    if (!body.manifestPath || !body.files) {
+        return reply.code(400).send({ error: 'manifestPath and files are required' });
+    }
+
+    reply.raw.setHeader('Content-Type', 'text/event-stream');
+    reply.raw.setHeader('Cache-Control', 'no-cache');
+    reply.raw.setHeader('Connection', 'keep-alive');
+    reply.raw.setHeader('X-Accel-Buffering', 'no');
+    reply.raw.flushHeaders();
+
+    const send = (event: string, data: string) => {
+        reply.raw.write(`event: ${event}\ndata: ${data}\n\n`);
+    };
+
+    const key = hashRequest(body.files, body.manifestPath);
+    const hit = cache.get(key);
+    if (hit) {
+        req.log.info({ key }, 'stream: cache hit');
+        send('log', 'Build cache hit — returning cached result.');
+        send('result', JSON.stringify(hit));
+        reply.raw.end();
+        return reply;
+    }
+
+    let result: BuildResponse;
+    try {
+        result = await buildProjectStreaming(body, (line) => send('log', line));
+    } catch (err) {
+        req.log.error({ err }, 'stream: build failed');
+        const errResult: BuildResponse = {
+            ok: false,
+            diagnostics: [{
+                severity: 'error',
+                message: err instanceof Error ? err.message : String(err),
+                file: body.manifestPath,
+            }],
+            durationMs: 0,
+        };
+        send('result', JSON.stringify(errResult));
+        reply.raw.end();
+        return reply;
+    }
+
+    if (result.ok) {
+        cache.set(key, result);
+    }
+    req.log.info({ key, ok: result.ok, durationMs: result.durationMs }, 'stream: build complete');
+    send('result', JSON.stringify(result));
+    reply.raw.end();
+    return reply;
 });
 
 const shutdown = async (signal: string) => {

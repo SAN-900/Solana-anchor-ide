@@ -20,9 +20,6 @@ export const COUNTER_FIXTURE: Omit<CompileRequest, 'runId' | 'cluster'> = {
             '',
         ].join('\n'),
         'Anchor.toml': [
-            '[toolchain]',
-            'anchor_version = "1.0.0"',
-            '',
             '[features]',
             'resolution = true',
             'skip-lint = false',
@@ -49,7 +46,7 @@ export const COUNTER_FIXTURE: Omit<CompileRequest, 'runId' | 'cluster'> = {
             'idl-build = ["anchor-lang/idl-build"]',
             '',
             '[dependencies]',
-            'anchor-lang = "1.0.0"',
+            'anchor-lang = "1.0.2"',
             '',
             '[lints.rust]',
             'unexpected_cfgs = { level = "allow" }',
